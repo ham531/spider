@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.miexam.spider.mapper.NoticeMapper">
+	<insert id="insertBatch">
+		INSERT INTO notice(org,title,href,date) VALUES
+		<foreach collection="list" item="notice" separator=",">
+			(#{notice.org}, #{notice.title}, #{notice.href}, #{notice.date})
+		</foreach>
+	</insert>
+
+	<select id="queryHrefByOrg" resultType="String">
+		SELECT href
+		FROM notice
+		WHERE org=#{org}
+		<if test="type == 1">
+			AND date >= DATE_SUB(NOW(),INTERVAL 1 DAY)
+		</if>
+		<if test="type == 2">
+			AND date >= DATE_SUB(NOW(),INTERVAL 1 WEEK)
+		</if>
+		<if test="type == 3">
+			AND date >= DATE_SUB(NOW(),INTERVAL 1 MONTH)
+		</if>
+	</select>
+
+	<select id="count" resultType="Integer">
+		SELECT count(id)
+		FROM notice
+		WHERE 1=1
+		<if test="org != null and org != ''">
+			AND org = #{org}
+		</if>
+		<if test="type == 1">
+			AND date >= DATE_SUB(NOW(),INTERVAL 1 DAY)
+		</if>
+		<if test="type == 2">
+			AND date >= DATE_SUB(NOW(),INTERVAL 1 WEEK)
+		</if>
+		<if test="type == 3">
+			AND date >= DATE_SUB(NOW(),INTERVAL 1 MONTH)
+		</if>
+		<if test="searchword != null and searchword != ''">
+			AND title LIKE CONCAT('%',#{searchword},'%')
+		</if>
+	</select>
+
+	<select id="query" resultType="Notice">
+		SELECT id,org,title,href,date
+		FROM notice
+		WHERE 1=1
+		<if test="org != null and org != ''">
+			AND org = #{org}
+		</if>
+		<if test="type == 1">
+			AND date >= DATE_SUB(NOW(),INTERVAL 1 DAY)
+		</if>
+		<if test="type == 2">
+			AND date >= DATE_SUB(NOW(),INTERVAL 1 WEEK)
+		</if>
+		<if test="type == 3">
+			AND date >= DATE_SUB(NOW(),INTERVAL 1 MONTH)
+		</if>
+		<if test="searchword != null and searchword != ''">
+			AND title LIKE CONCAT('%',#{searchword},'%')
+		</if>
+		ORDER BY date DESC
+		limit #{start},#{limit}
+	</select>
+</mapper>
