@@ -148,23 +148,24 @@ layui.use('table', function(){
  $('#spider').on('click', function(){
      searchwordVal = $("#searchword").val();
      if(searchwordVal == "") {
-    	 alert("请输入关键字");
+    	 layer.msg("请输入关键字！");
     	 return;
      }
-	 if(confirm('你确定要抓取数据吗？关键字为【' + searchwordVal + '】')) {
+	 layer.confirm('你确定要抓取数据吗？关键字为【' + searchwordVal + '】', function(index){
+		 layer.close(index);
 		 $.ajax({
 			url: "/spider/spider/",
 			type: 'GET',
 			data: {searchword: searchwordVal},
 			success: function(){
-				alert("操作成功！");
+				layer.msg("操作成功！");
 				$('#search').click();
 		    },
 			error: function(){
-				alert("操作失败！");
+				layer.msg("操作失败！");
 		    }
 		 });		 
-	 }
+	 });
  });
 });
 </script>
