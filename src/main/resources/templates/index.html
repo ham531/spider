@@ -153,11 +153,13 @@ layui.use('table', function(){
      }
 	 layer.confirm('你确定要抓取数据吗？关键字为【' + searchwordVal + '】', function(index){
 		 layer.close(index);
+		 layer.load();
 		 $.ajax({
 			url: "/spider/spider/",
 			type: 'GET',
 			data: {searchword: searchwordVal},
 			success: function(){
+				layer.closeAll('loading');
 				layer.msg("操作成功！");
 				$('#search').click();
 		    },
